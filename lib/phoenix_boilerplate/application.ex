@@ -7,13 +7,18 @@ defmodule PhoenixBoilerplate.Application do
 
   @impl true
   def start(_type, _args) do
+    unless Mix.env() == :prod do
+      Dotenv.load()
+      Mix.Task.run("loadconfig")
+    end
+
     children = [
       PhoenixBoilerplateWeb.Telemetry,
       PhoenixBoilerplate.Repo,
       {Ecto.Migrator,
-        repos: Application.fetch_env!(:phoenix_boilerplate, :ecto_repos),
-        skip: skip_migrations?()},
-      {DNSCluster, query: Application.get_env(:phoenix_boilerplate, :dns_cluster_query) || :ignore},
+       repos: Application.fetch_env!(:phoenix_boilerplate, :ecto_repos), skip: skip_migrations?()},
+      {DNSCluster,
+       query: Application.get_env(:phoenix_boilerplate, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: PhoenixBoilerplate.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: PhoenixBoilerplate.Finch},
