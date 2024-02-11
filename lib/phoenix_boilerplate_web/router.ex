@@ -17,7 +17,7 @@ defmodule PhoenixBoilerplateWeb.Router do
   scope "/", PhoenixBoilerplateWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/*segments", PageController, :home
   end
 
   # Other scopes may use custom stacks.
